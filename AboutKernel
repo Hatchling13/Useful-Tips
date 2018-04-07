@@ -1,0 +1,18 @@
+Ubuntu 16.04.4 LTS 환경에서 부팅 후 데스크탑 환경 로그인 화면에서 키보드와 마우스가 인식되지 않는 문제 발생.
+이전 세션에서 커널을 업그레이드하였던 기억이 존재.
+따라서 해당 부분에 문제가 있을 것으로 예측, 이전 커널로 부트해보기로 결정.
+grub의 Advanced Boot Setting에서 커널을 하나씩 선택해 부팅해보는 방식으로 문제가 존재하는 커널의 버전을 찾아보니 다음의 두 가지가 발견됨.
+linux-image-4.15.0-1005-azure-edge
+linux-image-4.13.0-1012-azure
+
+해당 이미지에 대해 검색해 본 결과, Linux kernel image for version 4.13.0 on 64 bit x86 SMP이라고 나옴.
+SMP에 대해서는 다음 링크(위키백과)를 참조.
+https://en.wikipedia.org/wiki/Symmetric_multiprocessing
+
+따라서 이전 버전인 linux-image-4.13.0-38-generic으로 부팅하여 다음 명령을 수행함.
+
+$ sudo apt remove --purge linux-image-4.15.0-1005-azure-edge
+$ sudo apt remove --purge linux-image-4.13.0-1012-azure
+$ sudo update-grub2
+
+해당 조치를 수행한 결과 정상적으로 작동됨.
